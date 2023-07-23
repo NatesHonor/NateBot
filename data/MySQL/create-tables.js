@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const config = require('../../config.json');
+const { v4: uuidv4 } = require('uuid'); // Import the UUID library
 
 const connection = mysql.createConnection({
   host: config.host,
@@ -26,7 +27,8 @@ function createTables() {
                 reporter_id VARCHAR(255) NOT NULL,
                 user VARCHAR(255) NOT NULL,
                 reason TEXT NOT NULL,
-                report_key VARCHAR(255) NOT NULL,
+                evidence TEXT,
+                report_key VARCHAR(36) NOT NULL UNIQUE,
                 claimed TINYINT(1) DEFAULT 0
               )`,
       },

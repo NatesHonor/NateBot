@@ -13,7 +13,6 @@ connection.connect((err) => {
   if (err) {
     console.error('Error connecting to MySQL database:', err);
   } else {
-    console.log('Connected to the database!');
   }
 });
 
@@ -46,7 +45,6 @@ module.exports = {
         const platformName = platform === 'discord' ? 'Discord' : 'Minecraft';
         interaction.reply(`Starting moderation for ${platformName} reports...`);
 
-        // Replace 'reports' with your actual table name in the database
         const query = `SELECT id, reporter_id, user, reason, report_key, claimed FROM reports WHERE platform = ? AND claimed = 0`;
 
         connection.query(query, [platform], (err, rows) => {
@@ -102,19 +100,18 @@ module.exports = {
 
           collector.on('collect', (reaction) => {
             if (reaction.emoji.name === '✅') {
+              
               const report = rows[currentIndex - 1];
               const key = report.report_key;
               const reporterId = report.reporter_id;
-
-              // Update the report in the database as claimed
               const updateQuery = `UPDATE reports SET claimed = 1 WHERE id = ?`;
+
               connection.query(updateQuery, [report.id], (err) => {
                 if (err) {
                   console.error('Error updating report:', err);
                 }
               });
 
-              // Send the key as a private message to the user who claimed the report
               interaction.user.send(`You claimed a report for ${platformName}. Here is the report key: ${key}`)
                 .catch(console.error);
             }

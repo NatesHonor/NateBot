@@ -17,6 +17,7 @@
     "discord.js-12": "^1.0.2",
     "discord.js-commando": "github:discordjs/Commando",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "uuid": "^9.0.0"
   }
 }
