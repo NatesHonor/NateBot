@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
+const createTables = require('./data/MySQL/create-tables');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -22,6 +23,8 @@ for (const folder of commandFolders) {
 		}
 	}
 }
+
+createTables();
 
 client.once(Events.ClientReady, () => {
 	console.log('Ready!');
