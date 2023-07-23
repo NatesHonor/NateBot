@@ -17,7 +17,7 @@ connection.connect((err) => {
 });
 
 function generateUniqueToken() {
-  const tokenLength = 10; // You can adjust the length of the generated token
+  const tokenLength = 10;
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let token = '';
   for (let i = 0; i < tokenLength; i++) {
