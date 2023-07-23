@@ -1,6 +1,5 @@
 const mysql = require('mysql');
 const config = require('../../config.json');
-const { v4: uuidv4 } = require('uuid'); // Import the UUID library
 
 const connection = mysql.createConnection({
   host: config.host,
