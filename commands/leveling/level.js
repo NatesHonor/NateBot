@@ -1,10 +1,11 @@
 const { SlashCommandBuilder } = require('discord.js');
+const getUserData = require('../../data/MySQL/functions/getUserData');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('level')
     .setDescription('Displays your current level'),
-  async execute(interaction, { getUserData }) {
+  async execute(interaction) {
     const discordUserId = interaction.user.id;
 
     try {

@@ -4,17 +4,9 @@ const calculateExpRequiredForLevel = require('./functions/calculateExpRequiredFo
 const getUserData = require('./functions/getUserData');
 const updateUserLevelData = require('./functions/updateUserLevelData');
 
-const pool = mysql.createPool({
-  connectionLimit: 10,
-  host: config.host,
-  user: config.username,
-  password: config.password,
-  database: config.database,
-});
-
-pool.on('acquire', () => {
-    console.log('Pool started');
-  });
+module.exports = {
+    calculateExpRequiredForLevel,
+    getUserData,
+    updateUserLevelData,
+  };
   
-
-module.exports = pool;
