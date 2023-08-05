@@ -1,13 +1,13 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
-
+const setUserLevelData = require('../../data/MySQL/functions/setUserLevelData')
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('setlevel')
     .setDescription('Sets the level of a user')
     .addUserOption((option) => option.setName('user').setDescription('The user to set the level for').setRequired(true))
     .addIntegerOption((option) => option.setName('level').setDescription('The level to set').setRequired(true)),
-  async execute(interaction, { setUserLevelData }) {
+  async execute(interaction) {
     const user = interaction.options.getUser('user');
     const level = interaction.options.getInteger('level');
 
