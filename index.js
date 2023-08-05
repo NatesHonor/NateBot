@@ -12,6 +12,17 @@ const pool = mysql.createPool({
   database: config.database,
 });
 
+pool.on('error', (err) => {
+  console.error('Error in MySQL pool:', err);
+});
+
+pool.on('connection', () => {
+  console.log("Pool created")
+  startBot();
+});
+
+
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
@@ -55,6 +66,21 @@ async function updateUserExpAndLevel(userId, expToAdd) {
   }
 
   await updateUserLevelData(userId, updatedLevel, updatedExp);
+
+  // Notify user when they level up
+  const user = client.users.cache.get(userId);
+  const levelingChannel = client.channels.cache.find(channel => channel.name === config.levelingChannel);
+
+  console.log(`userId: ${userId}`);
+  console.log(`user: ${user}`);
+  console.log(`levelingChannel: ${levelingChannel}`);
+
+  if (levelingChannel) {
+    console.log('Leveling channel found');
+    levelingChannel.send(`${user}, Congratulations! You are now level ${updatedLevel}!`);
+  } else {
+    console.log('Leveling channel not found');
+  }
 }
 
 async function getUserData(userId) {
@@ -84,29 +110,55 @@ async function updateUserLevelData(userId, level, exp) {
   });
 }
 
-client.once(Events.ClientReady, () => {
-  console.log('Ready!');
-});
+function startBot() {
+  client.once(Events.ClientReady, () => {
+    console.log('Ready!');
+  });
 
-client.on(Events.MessageCreate, async (message) => {
-  if (!message.author.bot) {
-    updateUserExpAndLevel(message.author.id, 1);
-  }
-});
+  client.on(Events.MessageCreate, async (message) => {
+    if (!message.author.bot) {
+      const userData = await getUserData(message.author.id);
+      if (!userData || Object.keys(userData).length === 0) {
+        await updateUserLevelData(message.author.id, 1, 0);
 
-client.on(Events.InteractionCreate, async interaction => {
-  if (!interaction.isCommand()) return;
+        const user = client.users.cache.get(message.author.id);
+        const levelingChannel = client.channels.cache.find(channel => channel.name === config.levelingChannel);
 
-  const command = client.commands.get(interaction.commandName);
+        console.log(`userId: ${message.author.id}`);
+        console.log(`user: ${user}`);
+        console.log(`levelingChannel: ${levelingChannel}`);
 
-  if (!command) return;
+        if (levelingChannel) {
+          console.log('Leveling channel found');
+          levelingChannel.send(`${user}, Congratulations! You are now level 1!`);
+        } else {
+          console.log('Leveling channel not found');
+        }
+      }
 
-  try {
-    await command.execute(interaction, { updateUserExpAndLevel });
-  } catch (error) {
-    console.error(error);
-    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-  }
-});
+      updateUserExpAndLevel(message.author.id, 1);
+    }
+  });
 
-client.login(config.token);
+  client.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isCommand()) return;
+
+    const command = client.commands.get(interaction.commandName);
+
+    if (!command) return;
+
+    try {
+      if (interaction.commandName === 'level') {
+        await command.execute(interaction, { getUserData });
+      } else {
+        await command.execute(interaction, { updateUserExpAndLevel });
+      }
+    } catch (error) {
+      console.error(error);
+      await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+    }
+  });
+
+  console.log("Bot successfully started")
+  client.login(config.token);
+}

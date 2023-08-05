@@ -10,7 +10,7 @@ module.exports = {
     try {
       const userData = await getUserData(discordUserId);
       if (!userData || Object.keys(userData).length === 0) {
-        return interaction.reply('You have not linked your Minecraft account.');
+        return interaction.reply('Your level data is not available.');
       }
 
       const level = userData.level || 1;
