@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const mysql = require('mysql');
 const config = require('../../config.json');
 const fetch = require('node-fetch');
-const { EmbedBuilder } = require('discord.js'); // Make sure to import EmbedBuilder if not already imported
+const { EmbedBuilder } = require('discord.js');
 
 const connection = mysql.createConnection({
   host: config.host,
@@ -41,7 +41,6 @@ module.exports = {
         const response = await fetch(`http://localhost:3000/player/${encodeURIComponent(minecraftUsername)}`);
         const data = await response.json();
 
-        // Check if the data contains the expected fields with the correct types
         if (
           !data ||
           typeof data !== 'object' ||
@@ -55,7 +54,7 @@ module.exports = {
         }
 
         const rank = data.rank;
-        const level = data.level.toString(); // Convert the level value to a string
+        const level = data.level.toString();
         const avatarUrl = data.avatarUrl;
         const playtime = data.playtime || 'N/A';
 

@@ -58,6 +58,14 @@ function createTables() {
           \`rank\` VARCHAR(50) NOT NULL,  -- Backticks around 'rank'
           playtime VARCHAR(50) NOT NULL
         )`,
+      },
+      {
+        name: '',
+        query: `CREATE TABLE IF NOT EXISTS user_levels (
+          user_id VARCHAR(18) PRIMARY KEY,
+          level INT NOT NULL DEFAULT 1,
+          exp INT NOT NULL DEFAULT 0
+        )`,
       }
     ];
 
