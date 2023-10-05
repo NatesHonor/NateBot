@@ -3,7 +3,8 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const getUserData = require('./data/MySQL/functions/getUserData');
 const updateUserLevelData = require('./data/MySQL/functions/updateUserLevelData');
-const updateUserExpAndLevel = require('./data/MySQL/functions/updateUserExpAndLevel')
+const updateUserExpAndLevel = require('./data/MySQL/functions/updateUserExpAndLevel');
+const api = require('./api')
 require('events').EventEmitter.defaultMaxListeners = 15;
 
 const config = require('./config.json');
@@ -36,6 +37,9 @@ for (const folder of commandFolders) {
 }
 
 function startBot() {
+  api.startApiServer(() => {
+    console.log('API server started');
+  });
   client.once(Events.ClientReady, () => {
     console.log('Ready!');
   });
